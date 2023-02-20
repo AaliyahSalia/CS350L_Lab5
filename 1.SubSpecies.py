@@ -16,31 +16,70 @@
 # 	2 in B sub-species and Petri dish labels from smaller PR to bigger PR are 5 4
 
 
-number_petri_dishes = int(input("Please enter total number of Petri dishes: "))
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
-petri_dishes = []
-for i in range(number_petri_dishes):
-    label = input("Enter Petri dish label: ")
-    original = input("Enter original bacterial number: ")
-    new = input("Enter new bacterial number after one hour reproduction: ")
-    petri_dishes.append((label, int(original), int(new)))
+// define a new data type (petri_dish) that consists of three members (label, original, and new)
+typedef struct {
+    char label[100];
+    int original;
+    int new;
+} petri_dish;
 
-# calculate reproduction rates and sort the petri dishes by their rates
-petri_dishes = sorted(petri_dishes, key=lambda x: x[2]/x[1])
+// function used by qsort to compare the reproduction rates of two petri dishes
+int compare(const void *a, const void *b) {
+    petri_dish *dishA = (petri_dish *)a;
+    petri_dish *dishB = (petri_dish *)b;
+    double rateA = (double)(dishA->new) / dishA->original;
+    double rateB = (double)(dishB->new) / dishB->original;
+    if (rateA < rateB) {
+        return -1;
+    } else if (rateA > rateB) {
+        return 1;
+    } else {
+        return 0;
+    }
+}
 
-# determine A and B sub-species
-numA = 1
-for i in range(1, len(petri_dishes)):
-    if abs(petri_dishes[i][2]/petri_dishes[i][1] - petri_dishes[i-1][2]/petri_dishes[i-1][1]) > abs(petri_dishes[0][2]/petri_dishes[0][1] - petri_dishes[1][2]/petri_dishes[1][1]):
-        numA = i
-        break
+int main() {
+    int number_petri_dishes;
+    printf("Please enter total number of Petri dishes: ");
+    scanf("%d", &number_petri_dishes);
 
-# output results
-print(f"{numA} in A sub-species and Petri dish labels from smaller PR to bigger PR are ", end="")
-for i in range(numA):
-    print(petri_dishes[i][0], end=" ")
-print()
-print(f"{len(petri_dishes) - numA} in B sub-species and Petri dish labels from smaller PR to bigger PR are ", end="")
-for i in range(numA, len(petri_dishes)):
-    print(petri_dishes[i][0], end=" ")
-print()
+    petri_dish petri_dishes[number_petri_dishes];
+    for (int i = 0; i < number_petri_dishes; i++) {
+        printf("Enter Petri dish label: ");
+        scanf("%s", petri_dishes[i].label);
+        printf("Enter original bacterial number: ");
+        scanf("%d", &petri_dishes[i].original);
+        printf("Enter new bacterial number after one hour reproduction: ");
+        scanf("%d", &petri_dishes[i].new);
+    }
+
+    // sort the petri dishes by their reproduction rates
+    qsort(petri_dishes, number_petri_dishes, sizeof(petri_dish), compare);
+
+    // determine A and B sub-species
+    int numA = 1;
+    for (int i = 1; i < number_petri_dishes; i++) {
+        if (abs((double)(petri_dishes[i].new) / petri_dishes[i].original - (double)(petri_dishes[i-1].new) / petri_dishes[i-1].original) > abs((double)(petri_dishes[0].new) / petri_dishes[0].original - (double)(petri_dishes[1].new) / petri_dishes[1].original)) {
+            numA = i;
+            break;
+        }
+    }
+
+    // output results
+    printf("%d in A sub-species and Petri dish labels from smaller PR to bigger PR are ", numA);
+    for (int i = 0; i < numA; i++) {
+        printf("%s ", petri_dishes[i].label);
+    }
+    printf("\n");
+    printf("%d in B sub-species and Petri dish labels from smaller PR to bigger PR are ", number_petri_dishes - numA);
+    for (int i = numA; i < number_petri_dishes; i++) {
+        printf("%s ", petri_dishes[i].label);
+    }
+    printf("\n");
+
+    return 0;
+}
