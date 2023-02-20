@@ -16,33 +16,33 @@
 # 		The king will be 2
 
 
-# structure for a node in circular linked list
-class Node:
-    def __init__(self, x):
-        self.data = x
-        self.next = None
- 
-def monkeyKing(n, m):
-    head = Node(0)
-    prev = head
-    for i in range(1, n):
-        prev.next = Node(i)
-        prev = prev.next
-    prev.next = head 
- 
-    ptr1 = head
-    ptr2 = head.next
-    while (ptr2.next != ptr2):
-        count = 1
-        while (count != m):
-            ptr1 = ptr2
-            ptr2 = ptr2.next
-            count += 1
- 
-        ptr1.next = ptr2.next
-        ptr2 = ptr1.next
-    return ptr2.data
-  
-n = int(input("Please enter the total number of monkeys in the group: "))
-m = int(input("Please enter the 'm' value: "))
-print("The king will be: ", monkeyKing(n, m)) 
+#include <stdio.h>
+
+int findKing(int n, int m) {
+    int monkeys[n];
+    for (int i = 0; i < n; i++) {
+        monkeys[i] = i;
+    }
+
+    int eliminated = -1;
+    while (n > 1) {
+        eliminated = (eliminated + m) % n;
+        for (int i = eliminated; i < n - 1; i++) {
+            monkeys[i] = monkeys[i + 1];
+        }
+        n--;
+    }
+
+    return monkeys[0];
+}
+
+int main() {
+    int n, m;
+    printf("Enter total number of monkeys in a group: ");
+    scanf("%d", &n);
+    printf("Enter m value: ");
+    scanf("%d", &m);
+    int king = findKing(n, m);
+    printf("The king will be: %d\n", king);
+    return 0;
+}
